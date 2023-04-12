@@ -11,6 +11,6 @@ def softmax(x):
     return np.exp(x) / u
 
 def cross_entropy_error(y, t):
-    # log 0回避用の微小な値を作成
+    # log0回避用の微小な値を作成
     delta = 1e-7
     return - np.sum(t * np.log(y + delta))
