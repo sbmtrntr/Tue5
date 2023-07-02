@@ -55,6 +55,8 @@ train1 = dl.get_data('1', 'L') # 2人目の学習用データ
 test1 = dl.get_data('1', 'T') # 2人目のテスト用データ
 y_true = dl.get_label() # 正解ラベルのデータ (one-hot)
 
+# 問題の答えを記録するtxtファイルを開いておく
+ans = open("Results/Answer.txt", 'w')
 #################################################################################################
 
 # ニューラルネットワークのインスタンスを生成
@@ -62,9 +64,8 @@ MLP1 = MultiLayerPerceptron()
 
 average_loss = 1.0 # 損失の平均
 epochs = 0 # エポック数
-accuracy_result = [] # 図の描写用リスト
-loss_result = [] # 図の描写用リスト
-f = open("Results/Task1.txt", 'w') # 結果保存用のファイルを開いておく
+f = open("Results/Task1.csv", 'w') # 結果保存用のcsvファイルを開いておく
+f.write("Epochs,Accuracy,Loss\n")
 
 # 1. 筆記者0の学習用データでニューラルネットの学習を行う
 while average_loss > 0.001:
@@ -83,13 +84,10 @@ while average_loss > 0.001:
     accuracy = accuracy_cnt / 2000 # 正答率
     average_loss = running_loss / 2000 # 損失の平均
 
-    print("Epochs:", str(epochs), "Accuracy:", str(accuracy), "Loss:", str(average_loss))
-    f.writelines(["Epochs:", str(epochs), "  Accuracy:", str(accuracy), "  Loss:", str(average_loss), '\n'])
-    accuracy_result.append(accuracy)
-    loss_result.append(average_loss)
+    print(f"Epochs:{epochs} Accuracy:{accuracy}, Loss:{average_loss}")
+    f.write(f'{epochs},{accuracy:.3f},{average_loss:.5f}\n')
 
-# 図の描写
-mg.make_graph("Task1.png", "Training with data from writer0", accuracy_result, loss_result)
+f.close()
 
 # 2. 1で学習したニューラルネットに筆記者0の学習用データを入力して識別を行う
 accuracy_cnt = 0
@@ -98,9 +96,8 @@ for i in range(20):
         y_pred = MLP1.forward(train0[i, j])
         accuracy_cnt += np.argmax(y_pred) == np.argmax(y_true[i, j])
 
-print("train0 Accuracy:", str(accuracy_cnt / 2000))
-f.writelines(["train0 Accuracy:", str(accuracy_cnt / 2000), '\n'])
-
+print(f"#2 train0 Accuracy:{accuracy_cnt / 2000}")
+ans.write(f"#2 train0 Accuracy:{accuracy_cnt / 2000}\n")
 
 # 3. 1で学習したニューラルネットに筆記者0のテスト用データを入力して識別を行う
 accuracy_cnt = 0
@@ -109,8 +106,8 @@ for i in range(20):
         y_pred = MLP1.forward(test0[i, j])
         accuracy_cnt += np.argmax(y_pred) == np.argmax(y_true[i, j])
 
-print("test0 Accuracy:", str(accuracy_cnt / 2000))
-f.writelines(["test0 Accuracy:", str(accuracy_cnt / 2000), '\n'])
+print(f"#3 test0 Accuracy:{accuracy_cnt / 2000}")
+ans.write(f"#3 test0 Accuracy:{accuracy_cnt / 2000}\n")
 
 
 # 4. 1で学習したニューラルネットに筆記者1のテスト用データを入力して識別を行う
@@ -120,9 +117,8 @@ for i in range(20):
         y_pred = MLP1.forward(test1[i, j])
         accuracy_cnt += np.argmax(y_pred) == np.argmax(y_true[i, j])
 
-print("test1 Accuracy:", str(accuracy_cnt / 2000))
-f.writelines(["test1 Accuracy:", str(accuracy_cnt / 2000), '\n'])
-f.close()
+print(f"#4 test1 Accuracy:{accuracy_cnt / 2000}")
+ans.write(f"#4 test1 Accuracy:{accuracy_cnt / 2000}\n")
 
 #################################################################################################
 
@@ -131,9 +127,8 @@ MLP2 = MultiLayerPerceptron()
 
 average_loss = 1.0 # 損失の平均
 epochs = 0 # エポック数
-accuracy_result = []
-loss_result = []
-f = open("Results/Task2.txt", 'w')
+f = open("Results/Task2.csv", 'w') # 結果保存用のcsvファイルを開いておく
+f.write("Epochs,Accuracy,Loss\n")
 
 # 5. 筆記者1の学習用データでニューラルネットの学習を行う
 while average_loss > 0.001:
@@ -152,13 +147,10 @@ while average_loss > 0.001:
     accuracy = accuracy_cnt / 2000 # 正答率
     average_loss = running_loss / 2000 # 損失の平均
 
-    print("Epochs:", str(epochs), "Accuracy:", str(accuracy), "Loss:", str(average_loss))
-    f.writelines(["Epochs:", str(epochs), "  Accuracy:", str(accuracy), "  Loss:", str(average_loss), '\n'])
-    accuracy_result.append(accuracy)
-    loss_result.append(average_loss)
+    print(f"Epochs:{epochs} Accuracy:{accuracy}, Loss:{average_loss}")
+    f.write(f'{epochs},{accuracy:.3f},{average_loss:.5f}\n')
 
-# 図の描写
-mg.make_graph("Task2.png", "Training with data from writer1", accuracy_result, loss_result)
+f.close()
 
 # 6. 5で学習したニューラルネットに筆記者1の学習用データを入力して識別を行う
 accuracy_cnt = 0
@@ -167,8 +159,8 @@ for i in range(20):
         y_pred = MLP2.forward(train1[i, j])
         accuracy_cnt += np.argmax(y_pred) == np.argmax(y_true[i, j])
 
-print("train0 Accuracy:", str(accuracy_cnt / 2000))
-f.writelines(["train0 Accuracy:", str(accuracy_cnt / 2000), '\n'])
+print(f"#6 train0 Accuracy:{accuracy_cnt / 2000}")
+ans.write(f"#6 train0 Accuracy:{accuracy_cnt / 2000}\n")
 
 
 # 7. 5で学習したニューラルネットに筆記者0のテスト用データを入力して識別を行う
@@ -178,8 +170,8 @@ for i in range(20):
         y_pred = MLP2.forward(test0[i, j])
         accuracy_cnt += np.argmax(y_pred) == np.argmax(y_true[i, j])
 
-print("test0 Accuracy:", str(accuracy_cnt / 2000))
-f.writelines(["test0 Accuracy:", str(accuracy_cnt / 2000), '\n'])
+print(f"#7 test0 Accuracy:{accuracy_cnt / 2000}")
+ans.write(f"#7 test0 Accuracy:{accuracy_cnt / 2000}\n")
 
 
 # 8. 5で学習したニューラルネットに筆記者1のテスト用データを入力して識別を行う
@@ -189,9 +181,8 @@ for i in range(20):
         y_pred = MLP2.forward(test1[i, j])
         accuracy_cnt += np.argmax(y_pred) == np.argmax(y_true[i, j])
 
-print("test1 Accuracy:", str(accuracy_cnt / 2000))
-f.writelines(["test1 Accuracy:", str(accuracy_cnt / 2000), '\n'])
-f.close()
+print(f"#8 test1 Accuracy:{accuracy_cnt / 2000}")
+ans.write(f"#8 test1 Accuracy:{accuracy_cnt / 2000}\n")
 
 #################################################################################################
 
@@ -200,9 +191,8 @@ MLP3 = MultiLayerPerceptron()
 
 average_loss = 1.0 # 損失の平均
 epochs = 0 # エポック数
-accuracy_result = []
-loss_result = []
-f = open("Results/Task3.txt", 'w')
+f = open("Results/Task3.csv", 'w') # 結果保存用のcsvファイルを開いておく
+f.write("Epochs,Accuracy,Loss\n")
 
 # 9. 筆記者0と筆記者1の学習用データでニューラルネットの学習を行う
 while average_loss > 0.001:
@@ -228,14 +218,11 @@ while average_loss > 0.001:
     accuracy = accuracy_cnt / 4000 # 正答率
     average_loss = running_loss / 4000 # 損失の平均
 
-    print("Epochs:", str(epochs), "Accuracy:", str(accuracy), "Loss:", str(average_loss))
-    f.writelines(["Epochs:", str(epochs), "  Accuracy:", str(accuracy), "  Loss:", str(average_loss), '\n'])
-    accuracy_result.append(accuracy)
-    loss_result.append(average_loss)
+    print(f"Epochs:{epochs} Accuracy:{accuracy}, Loss:{average_loss}")
+    f.write(f'{epochs},{accuracy:.3f},{average_loss:.5f}\n')
 
+f.close()
 
-# 図の描写
-mg.make_graph("Task3.png", "Training with data from writer0 and writer1", accuracy_result, loss_result)
 
 # 10. 9で学習したニューラルネットに筆記者0と筆記者1の学習用データを入力して識別を行う
 accuracy_cnt = 0
@@ -246,8 +233,8 @@ for i in range(20):
         y_pred = MLP3.forward(train1[i, j])
         accuracy_cnt += np.argmax(y_pred) == np.argmax(y_true[i, j])
 
-print("train0 and train1 Accuracy:", str(accuracy_cnt / 4000))
-f.writelines(["train0 and train1 Accuracy:", str(accuracy_cnt / 4000), '\n'])
+print(f"#10 train0 and train1 Accuracy:{accuracy_cnt / 4000}")
+ans.write(f"#10 train0 and train1 Accuracy:{accuracy_cnt / 4000}\n")
 
 
 # 11. 9で学習したニューラルネットに筆記者0と筆記者1のテスト用データを入力して識別を行う
@@ -259,6 +246,10 @@ for i in range(20):
         y_pred = MLP3.forward(test1[i, j])
         accuracy_cnt += np.argmax(y_pred) == np.argmax(y_true[i, j])
 
-print("test0 and test1 Accuracy:", str(accuracy_cnt / 4000))
-f.writelines(["test0 and test1 Accuracy:", str(accuracy_cnt / 4000), '\n'])
-f.close()
+print(f"#11 test0 and test1 Accuracy:{accuracy_cnt / 4000}")
+ans.write(f"#11 test0 and test1 Accuracy:{accuracy_cnt / 4000}\n")
+
+ans.close()
+
+# 図の描写
+mg.make_graph()

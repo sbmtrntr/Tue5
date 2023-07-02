@@ -1,0 +1,8 @@
+#2 train0 Accuracy:0.999
+#3 test0 Accuracy:0.9985
+#4 test1 Accuracy:0.7665
+#6 train0 Accuracy:0.998
+#7 test0 Accuracy:0.7965
+#8 test1 Accuracy:0.996
+#10 train0 and train1 Accuracy:0.99725
+#11 test0 and test1 Accuracy:0.994
